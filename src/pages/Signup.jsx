@@ -1,22 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
+import Auth from '@/lib/api/auth'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
-import { useState } from 'react'
 
 function SignupPage() {
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(false)
-    const [clicked, setIsClicked] = useState(false)
-    const [name, setName] = useState('')
+    const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [age, setAge] = useState('')
+    const [gender, setGender] = useState('male')
+    const [occupation, setOccupation] = useState('')
     const [error, setError] = useState('')
     const [showPW, setShowPW] = useState(false)
     const [hasUpperCase, setHasUpperCase] = useState(false)
-
-    const handleLoginClick = () => {
-        setIsClicked(!clicked)
-    }
+    const [isFormValid, setFormValid] = useState(false)
 
     const togglePasswordVisibility = () => {
         setShowPW(!showPW)
@@ -25,8 +25,8 @@ function SignupPage() {
     const onChange = e => {
         const { name, value } = e.target
         let errorMessage = ''
-        if (name === 'name') {
-            setName(value)
+        if (name === 'username') {
+            setUsername(value)
         } else if (name === 'email') {
             setEmail(value)
 
@@ -38,30 +38,55 @@ function SignupPage() {
 
             if (value.length < 6) {
                 errorMessage = '비밀번호는 최소 6자 이상이어야 합니다.'
-            } else if (value.length === 0) {
-                errorMessage = ' '
             }
 
             setHasUpperCase(/[A-Z]/.test(value))
+        } else if (name === 'age') {
+            setAge(value)
+        } else if (name === 'occupation') {
+            setOccupation(value)
         }
 
         setError(errorMessage)
     }
 
-    const onSubmit = e => {
+    // 모든 필드가 유효한지 확인
+    useEffect(() => {
+        const isAllFieldsValid =
+            username.trim() !== '' &&
+            email.trim() !== '' &&
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+            password.length >= 6 &&
+            age.trim() !== '' &&
+            occupation.trim() !== ''
+
+        setFormValid(isAllFieldsValid)
+    }, [username, email, password, age, occupation])
+
+    const onSubmit = async e => {
         e.preventDefault()
         setError('')
 
-        if (isLoading || name === '' || email === '' || password === '') return
+        if (!isFormValid || isLoading) return
 
         setLoading(true)
 
-        setTimeout(() => {
-            // Simulate successful signup process
-            console.log('User Signed Up:', { name, email })
+        try {
+            const response = await Auth.registerUser({
+                username,
+                password,
+                age: parseInt(age, 10),
+                gender,
+                occupation
+            })
+            console.log('회원가입 성공:', response)
+            navigate('/login') // 로그인 페이지로 이동
+        } catch (error) {
+            console.error('회원가입 실패:', error)
+            setError('회원가입 중 문제가 발생했습니다. 다시 시도해주세요.')
+        } finally {
             setLoading(false)
-            navigate('/login')
-        }, 2000)
+        }
     }
 
     return (
@@ -79,14 +104,14 @@ function SignupPage() {
                 <div className="mb-4">
                     <label
                         className="block text-sm text-black font-bold mb-2"
-                        htmlFor="name">
+                        htmlFor="username">
                         닉네임
                     </label>
                     <input
                         type="text"
-                        name="name"
+                        name="username"
                         placeholder="닉네임을 입력해주세요"
-                        value={name}
+                        value={username}
                         onChange={onChange}
                         className="w-full p-3 border rounded-md focus:ring focus:ring-blue-300 text-black"
                     />
@@ -129,6 +154,52 @@ function SignupPage() {
                         </button>
                     </div>
                 </div>
+                <div className="mb-4">
+                    <label
+                        className="block text-sm text-black font-bold mb-2"
+                        htmlFor="age">
+                        나이
+                    </label>
+                    <input
+                        type="number"
+                        name="age"
+                        placeholder="나이를 입력해주세요"
+                        value={age}
+                        onChange={onChange}
+                        className="w-full p-3 border rounded-md focus:ring focus:ring-blue-300 text-black"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label
+                        className="block text-sm text-black font-bold mb-2"
+                        htmlFor="occupation">
+                        직업
+                    </label>
+                    <input
+                        type="text"
+                        name="occupation"
+                        placeholder="직업을 입력해주세요"
+                        value={occupation}
+                        onChange={onChange}
+                        className="w-full p-3 border rounded-md focus:ring focus:ring-blue-300 text-black"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label
+                        className="block text-sm text-black font-bold mb-2"
+                        htmlFor="gender">
+                        성별
+                    </label>
+                    <select
+                        name="gender"
+                        value={gender}
+                        onChange={e => setGender(e.target.value)}
+                        className="w-full p-3 border rounded-md focus:ring focus:ring-blue-300 text-black">
+                        <option value="male">남성</option>
+                        <option value="female">여성</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
 
                 {hasUpperCase && (
                     <p className="text-sm text-blue-600 flex items-center">
@@ -144,10 +215,9 @@ function SignupPage() {
                 )}
                 <button
                     type="submit"
-                    onClick={handleLoginClick}
-                    disabled={isLoading}
+                    disabled={!isFormValid || isLoading}
                     className={`w-full py-3 mt-6 text-white font-bold rounded-md ${
-                        clicked ? 'bg-blue-600' : 'bg-blue-300'
+                        isFormValid ? 'bg-blue-600' : 'bg-blue-300'
                     }`}>
                     {isLoading ? '로딩중...' : '계정 생성하기'}
                 </button>
