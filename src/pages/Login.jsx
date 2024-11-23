@@ -142,11 +142,11 @@ function LoginPage() {
                         className="text-blue-600 hover:underline">
                         회원가입하기 &rarr;
                     </Link>
-                    <p
+                    {/* <p
                         onClick={() => setShowPasswordReset(true)}
                         className="text-blue-600 hover:underline cursor-pointer">
                         비밀번호 찾기 &rarr;
-                    </p>
+                    </p> */}
                 </div>
                 {/* <div className="mt-8 text-center">
                     <p className="text-sm text-gray-700 mb-4">간편 로그인</p>
