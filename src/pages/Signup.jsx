@@ -50,7 +50,6 @@ function SignupPage() {
         setError(errorMessage)
     }
 
-    // 모든 필드가 유효한지 확인
     useEffect(() => {
         const isAllFieldsValid =
             username.trim() !== '' &&
@@ -80,7 +79,7 @@ function SignupPage() {
                 occupation
             })
             console.log('회원가입 성공:', response)
-            navigate('/login') // 로그인 페이지로 이동
+            navigate('/login')
         } catch (error) {
             console.error('회원가입 실패:', error)
             setError('회원가입 중 문제가 발생했습니다. 다시 시도해주세요.')
@@ -93,7 +92,7 @@ function SignupPage() {
         <div className="flex justify-center items-center min-h-screen">
             <form
                 onSubmit={onSubmit}
-                className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+                className="w-full max-w-md bg-white rounded-lg p-6">
                 <h2 className="text-center text-2xl font-bold mb-8">
                     <img
                         src="/src/assets/images/logo-full-transparent.png"

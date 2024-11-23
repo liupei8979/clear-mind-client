@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 
-import Auth from '@/lib/api/auth' // Auth 모듈 가져오기
+import Auth from '@/lib/api/auth'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { useState } from 'react'
 
@@ -49,13 +49,11 @@ function LoginPage() {
         setLoading(true)
 
         try {
-            // 로그인 API 호출
             const response = await Auth.loginUser({ username: email, password })
             console.log('로그인 성공:', response)
 
-            // 토큰 저장 (예: localStorage에 저장)
             localStorage.setItem('token', response.token)
-            navigate('/home') // 로그인 성공 후 리디렉션
+            navigate('/home')
         } catch (error) {
             console.error('로그인 실패:', error)
             setError('이메일 또는 비밀번호가 올바르지 않습니다.')
@@ -68,7 +66,7 @@ function LoginPage() {
         <div className="flex justify-center items-center min-h-screen">
             <form
                 onSubmit={onSubmit}
-                className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+                className="w-full max-w-md bg-white rounded-lg p-6">
                 <h2 className="text-center text-2xl font-bold mb-8">
                     <img
                         src="/src/assets/images/logo-full-transparent.png"
@@ -141,4 +139,3 @@ function LoginPage() {
 }
 
 export default LoginPage
-
