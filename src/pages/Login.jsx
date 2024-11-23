@@ -1,24 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 
+import Auth from '@/lib/api/auth' // Auth 모듈 가져오기
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 import { useState } from 'react'
 
 function LoginPage() {
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(false)
-    const [clicked, setIsClicked] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [showPW, setShowPW] = useState(false)
-    const [hasUpperCase, setHasUpperCase] = useState(false)
 
     const togglePasswordVisibility = () => {
         setShowPW(!showPW)
-    }
-
-    const handleLoginClick = () => {
-        setIsClicked(!clicked)
     }
 
     const onChange = e => {
@@ -37,8 +32,6 @@ function LoginPage() {
             if (value.length < 6) {
                 errorMessage = '비밀번호는 최소 6자 이상이어야 합니다.'
             }
-
-            setHasUpperCase(/[A-Z]/.test(value))
         }
 
         setError(errorMessage)
@@ -48,15 +41,27 @@ function LoginPage() {
         e.preventDefault()
         setError('')
 
-        if (isLoading || email === '' || password === '') return
+        if (isLoading || email === '' || password === '') {
+            setError('모든 필드를 채워주세요.')
+            return
+        }
 
         setLoading(true)
 
-        setTimeout(() => {
-            console.log('User Logged In:', { email })
+        try {
+            // 로그인 API 호출
+            const response = await Auth.loginUser({ username: email, password })
+            console.log('로그인 성공:', response)
+
+            // 토큰 저장 (예: localStorage에 저장)
+            localStorage.setItem('token', response.token)
+            navigate('/home') // 로그인 성공 후 리디렉션
+        } catch (error) {
+            console.error('로그인 실패:', error)
+            setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+        } finally {
             setLoading(false)
-            navigate('/home')
-        }, 2000)
+        }
     }
 
     return (
@@ -109,12 +114,6 @@ function LoginPage() {
                         </button>
                     </div>
                 </div>
-                {hasUpperCase && (
-                    <p className="text-sm text-blue-600 flex items-center">
-                        <IoMdInformationCircleOutline className="mr-1" />
-                        비밀번호에 대문자가 포함되어 있습니다
-                    </p>
-                )}
                 {error && (
                     <p className="text-sm text-red-600 flex items-center mt-2">
                         <IoMdInformationCircleOutline className="mr-1" />
@@ -123,10 +122,9 @@ function LoginPage() {
                 )}
                 <button
                     type="submit"
-                    onClick={handleLoginClick}
                     disabled={isLoading}
                     className={`w-full py-3 mt-6 text-white font-bold rounded-md ${
-                        clicked ? 'bg-blue-600' : 'bg-blue-300'
+                        isLoading ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'
                     }`}>
                     {isLoading ? '로딩중...' : '로그인'}
                 </button>
@@ -143,3 +141,4 @@ function LoginPage() {
 }
 
 export default LoginPage
+
