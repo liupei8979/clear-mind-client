@@ -148,7 +148,7 @@ function LoginPage() {
                         비밀번호 찾기 &rarr;
                     </p>
                 </div>
-                <div className="mt-8 text-center">
+                {/* <div className="mt-8 text-center">
                     <p className="text-sm text-gray-700 mb-4">간편 로그인</p>
                     <div className="flex justify-center space-x-4">
                         <img
@@ -167,7 +167,7 @@ function LoginPage() {
                             className="w-10 h-10"
                         />
                     </div>
-                </div>
+                </div> */}
             </form>
         </div>
     )
