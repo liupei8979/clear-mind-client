@@ -12,7 +12,6 @@ function LoginPage() {
     const [error, setError] = useState('')
     const [showPW, setShowPW] = useState(false)
     const [hasUpperCase, setHasUpperCase] = useState(false)
-    const [showPasswordReset, setShowPasswordReset] = useState(false)
 
     const togglePasswordVisibility = () => {
         setShowPW(!showPW)
@@ -39,10 +38,6 @@ function LoginPage() {
                 errorMessage = '비밀번호는 최소 6자 이상이어야 합니다.'
             }
 
-            if (value.length === 0) {
-                errorMessage = ' '
-            }
-
             setHasUpperCase(/[A-Z]/.test(value))
         }
 
@@ -58,7 +53,6 @@ function LoginPage() {
         setLoading(true)
 
         setTimeout(() => {
-            // Simulate login process
             console.log('User Logged In:', { email })
             setLoading(false)
             navigate('/home')
@@ -72,9 +66,9 @@ function LoginPage() {
                 className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
                 <h2 className="text-center text-2xl font-bold mb-8">
                     <img
-                        src="/src/assets/icons/earth-logo-horizon.svg"
+                        src="/src/assets/images/logo-full-transparent.png"
                         alt="Logo"
-                        className="mx-auto"
+                        className="mx-auto w-[50px] h-[50px]"
                     />
                 </h2>
                 <div className="mb-4">
@@ -142,32 +136,7 @@ function LoginPage() {
                         className="text-blue-600 hover:underline">
                         회원가입하기 &rarr;
                     </Link>
-                    {/* <p
-                        onClick={() => setShowPasswordReset(true)}
-                        className="text-blue-600 hover:underline cursor-pointer">
-                        비밀번호 찾기 &rarr;
-                    </p> */}
                 </div>
-                {/* <div className="mt-8 text-center">
-                    <p className="text-sm text-gray-700 mb-4">간편 로그인</p>
-                    <div className="flex justify-center space-x-4">
-                        <img
-                            src="/src/assets/icons/naver-icon.svg"
-                            alt="Naver"
-                            className="w-10 h-10"
-                        />
-                        <img
-                            src="/src/assets/icons/kakao-round-icon.svg"
-                            alt="Kakao"
-                            className="w-10 h-10"
-                        />
-                        <img
-                            src="/src/assets/icons/apple-icon.svg"
-                            alt="Apple"
-                            className="w-10 h-10"
-                        />
-                    </div>
-                </div> */}
             </form>
         </div>
     )

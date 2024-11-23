@@ -71,9 +71,9 @@ function SignupPage() {
                 className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
                 <h2 className="text-center text-2xl font-bold mb-8">
                     <img
-                        src="/src/assets/icons/earth-logo-horizon.svg"
+                        src="/src/assets/images/logo-full-transparent.png"
                         alt="Logo"
-                        className="mx-auto"
+                        className="mx-auto w-[50px] h-[50px]"
                     />
                 </h2>
                 <div className="mb-4">
